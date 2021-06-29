@@ -29,7 +29,7 @@ end
 continuenow = true;
 while continuenow 
     if mod(n,2) == 0
-        fprintf('Now testing %d by %d by %d supercell...\n', n,n,n) 
+        fprintf('Checking sum up to %d unit cells away...\n', n) 
     end
     for a = -n:1:n %dipole sum
         for b = -n:1:n
