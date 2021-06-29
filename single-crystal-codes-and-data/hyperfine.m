@@ -1,6 +1,15 @@
-function [pc,hyp,gtensor] = hyperfine(sig,lat,chi,positions)
+function [pc, hyp, g, A] = hyperfine(sig,lat,chi,positions)
 %takes in susceptibility tensor from ChiTensor, and lattice positions to 
 %calculate hyperfine interaction for 31P shifts
+
+%sig is the shift tensor 
+
+%lat is the lattice vectors, lat = 3 x 3 matrix, diagonals are a,b,c
+%lattice constants, off diagonals are 0
+
+%positions are atomic positions of paramagnetic sites in the unit cell
+%(rel), positions = 3 x n matrix, positions(:,n) = distance vector of nth
+%site
 
 
 alat = lat(:,1);
@@ -29,22 +38,24 @@ while continuenow
                 for z = 1:length(positions2)
                     ra = (positions2(:,z) + (a*alat) + (b*blat) + (c*clat)) - Psite1;
                     rb = ra/norm(ra);
-                    D = B +(eye(3) - 3*(rb*rb'))/(norm(ra)^3); 
+                    D = D +((eye(3) - 3*(rb*rb'))/(norm(ra)^3));  
                 end
             end
         end
     end
-    if(all(abs((D-B)) < abs(0.0001*B))) %convergence condition
+    if(all(abs((D-B)) < abs(0.001*B))) %convergence condition
         continuenow = false; 
     else %starts new iteration
         B = D;
+        D = zeros(3);
         n = n + 1;
     end
 end
 t = toc;
 fprintf('The calculation converged after n = %d,  in %d seconds', n,t)
 
-pc = 1/(4*pi)*D*chi;
+pc = 1/(4*pi)*D*chi; %calcualted pseudocontact term
+
 
 
 muB = 9.274009994e-24;
@@ -53,9 +64,13 @@ T = 298;
 k = 1.38064852e-23;
 mu0 = 4*pi*10^-7;
 Na = 6.02e23;
+gam = 17.235;
 
-gtensor = sqrtm(3*k*T*chi/(Na*S*(S+1)*mu0*muB**2));
+g = sqrtm(3*k*T*chi/(S*(S+1)*mu0*muB^2));
 
-hyp = 
+hyp = sig - pc; %calculated fermi contact term
+
+A = hyp*3*k*T*gam/(S*(S+1)*muB)*g; %estimation of hyperfine coupling constant 
+
 
 end
