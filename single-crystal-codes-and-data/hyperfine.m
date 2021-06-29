@@ -1,12 +1,9 @@
 function [pc, hyp, g, A] = hyperfine(sig,lat,chi,positions)
 %takes in susceptibility tensor from ChiTensor, and lattice positions to 
 %calculate hyperfine interaction for 31P shifts
-
 %sig is the shift tensor 
-
 %lat is the lattice vectors, lat = 3 x 3 matrix, diagonals are a,b,c
 %lattice constants, off diagonals are 0
-
 %positions are atomic positions of paramagnetic sites in the unit cell
 %(rel), positions = 3 x n matrix, positions(:,n) = distance vector of nth
 %site
@@ -24,8 +21,8 @@ for a = 1:length(positions)
     positions2(:,a) = lat*positions(:,a);
 end
 
-Psite1 = [.41782;.25;.09477]*1e-10;
-Psite2 = [.91789;.75;.40522]*1e-10;
+Psite1 = [.41782;.25;.09477]*1e-10; %Taken from Materials Project LiFePO4 31P positions
+Psite2 = [.91789;.75;.40522]*1e-10; %Taken from Materials Project LiFePO4 31P positions
 
 continuenow = true;
 while continuenow 
@@ -52,21 +49,20 @@ while continuenow
     end
 end
 t = toc;
-fprintf('The calculation converged after n = %d,  in %d seconds', n,t)
+fprintf('The calculation converged after n = %d,  in %d seconds\n', n,t)
 
 pc = 1/(4*pi)*D*chi; %calcualted pseudocontact term
 
 
 
 muB = 9.274009994e-24;
-S = 0.5;
-T = 298;
+S = input('Please input spin of TM site (2 for Fe, 2.5 for Mn): ');
+T = 293;
 k = 1.38064852e-23;
 mu0 = 4*pi*10^-7;
-Na = 6.02e23;
-gam = 17.235;
+gam = 17.235e6;
 
-g = sqrtm(3*k*T*chi/(S*(S+1)*mu0*muB^2));
+g = sqrtm(-3*k*T*chi/(S*(S+1)*mu0*muB^2));
 
 hyp = sig - pc; %calculated fermi contact term
 
