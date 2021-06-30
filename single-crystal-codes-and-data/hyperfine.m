@@ -62,7 +62,7 @@ k = 1.38064852e-23;
 mu0 = 4*pi*10^-7;
 gam = 17.235e6;
 
-g = sqrtm(-3*k*T*chi/(S*(S+1)*mu0*muB^2));
+g = sqrtm(3*k*T*chi/(S*(S+1)*mu0*muB^2));
 
 hyp = sig - pc; %calculated fermi contact term
 
