@@ -37,7 +37,7 @@ while continuenow
                 for z = 1:length(positions2)
                     ra = positions2(:,z) + (a*alat) + (b*blat) + (c*clat);
                     rb = ra/norm(ra);
-                    D = D +((eye(3) - 3*(rb*rb'))/(norm(ra)^3)); 
+                    D = D +((eye(3) - (3*rb*rb'))/(norm(ra)^3)); 
                 end
             end
         end

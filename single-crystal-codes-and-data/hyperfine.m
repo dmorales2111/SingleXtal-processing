@@ -35,7 +35,7 @@ while continuenow
                 for z = 1:length(positions2)
                     ra = (positions2(:,z) + (a*alat) + (b*blat) + (c*clat)) - Psite1;
                     rb = ra/norm(ra);
-                    D = D +((eye(3) - 3*(rb*rb'))/(norm(ra)^3));  
+                    D = D +((eye(3) - (3*rb*rb'))/(norm(ra)^3));  
                 end
             end
         end
@@ -62,7 +62,7 @@ k = 1.38064852e-23;
 mu0 = 4*pi*10^-7;
 gam = 17.235e6;
 
-g = sqrtm(-3*k*T*chi/(S*(S+1)*mu0*muB^2));
+g = sqrtm(3*k*T*chi/(S*(S+1)*mu0*muB^2));
 
 hyp = sig - pc; %calculated fermi contact term
 
