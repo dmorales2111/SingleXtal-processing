@@ -4,9 +4,12 @@ function[chi,n] = ChiTensor(del,lat,positions)
 %determines the maximum size of supercell which gives significant
 %contribution to tensor
 %To be used with 7Li shift tensor!
-%sig is the shift tensor LESS the contribution from the fermi contact
+
+%del is the shift tensor LESS the contribution from the fermi contact
+
 %lat is the lattice vectors, lat = 3 x 3 matrix, diagonals are a,b,c
 %lattice constants, off diagonals are 0
+
 %positions are atomic positions of paramagnetic sites in the unit cell
 %(rel), positions = 3 x n matrix, positions(:,n) = distance vector of nth
 %site
@@ -37,7 +40,7 @@ while continuenow
                 for z = 1:length(positions2)
                     ra = positions2(:,z) + (a*alat) + (b*blat) + (c*clat);
                     rb = ra/norm(ra);
-                    D = D +((3*(rb*rb') - eye(3))/(norm(ra)^3)); 
+                    D = D +(((3*(rb*rb')) - eye(3))/(norm(ra)^3)); 
                 end
             end
         end
@@ -51,7 +54,7 @@ while continuenow
     end
 end
 t = toc;
-chi = -4*pi*del*mldivide(D,eye(3));
+chi = 4*pi*del*mldivide(D,eye(3));
 
 fprintf('The calculation converged after n = %d,  in %d seconds', n,t)
 end
