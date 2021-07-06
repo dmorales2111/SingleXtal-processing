@@ -26,8 +26,8 @@ for a = 1:length(positions)
     positions2(:,a) = lat*positions(:,a);
 end
 
-Psite1 = [.41782;.25;.09477]*1e-10;
-Psite2 = [.91789;.75;.40522]*1e-10;
+Psite1 = [.09477*lat(:,1);.25*lat(:,2);.41782*lat(:,3)]
+%Psite2 = [.91789;.75;.40522]*1e-10;
 
 continuenow = true;
 while continuenow 
@@ -56,7 +56,7 @@ end
 t = toc;
 fprintf('The calculation converged after n = %d,  in %d seconds\n', n,t)
 
-pc = 1/(4*pi)*D*chi;
+pc = 1*e6*1/(4*pi)*D*chi;
 
 
 muB = 9.274009994e-24;
@@ -67,7 +67,7 @@ mu0 = 4*pi*10^-7;
 gam = 17.235e6;
 gtensor = sqrtm(3*k*T*chi/(S*(S+1)*mu0*muB^2));
 
-hyp = del - pc; %calculated fermi contact term
+hyp = (1*e6*del) - pc; %calculated fermi contact term
 
 A = hyp*3*k*T*gam/(S*(S+1)*muB)*gtensor; %estimation of hyperfine coupling constant 
 
