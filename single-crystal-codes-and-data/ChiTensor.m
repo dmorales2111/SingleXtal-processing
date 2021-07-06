@@ -1,4 +1,4 @@
-function[chi,molchi,n] = ChiTensor(del,lat,positions)
+function[chi,n] = ChiTensor(del,lattice,positions)
 
 %computes the Magnetic susceptibility Tensor for the given material, and
 %determines the maximum size of supercell which gives significant
@@ -17,16 +17,16 @@ function[chi,molchi,n] = ChiTensor(del,lat,positions)
 tic;
 
 
-alat = lat(:,1);
-blat = lat(:,2);
-clat = lat(:,3);
+alat = lattice(:,1);
+blat = lattice(:,2);
+clat = lattice(:,3);
 
 n = 0;
 D = zeros(3);
 B = zeros(3);
 positions2 = zeros(3,length(positions));
 for a = 1:length(positions)
-    positions2(:,a) = lat*positions(:,a);
+    positions2(:,a) = lattice*positions(:,a);
 end
 
 continuenow = true;
@@ -45,7 +45,7 @@ while continuenow
             end
         end
     end
-    if(all(abs((D-B)) < abs(0.001*B))) %convergence condition
+    if(all(abs((D-B)) < abs(0.01*B))) %convergence condition
         continuenow = false; 
     else %starts new iteration
         B = D;
@@ -54,9 +54,8 @@ while continuenow
     end
 end
 t = toc;
-Na = 6.02e23;
-chi = 1e6*4*pi*del*mldivide(D,eye(3));
-molchi = Na*chi;
+
+chi = 1e-6*4*pi*del*mldivide(D,eye(3));
 fprintf('The calculation converged after n = %d,  in %d seconds', n,t)
 end
 
