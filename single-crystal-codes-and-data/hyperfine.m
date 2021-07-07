@@ -7,6 +7,9 @@ function [pc,hyp,gtensor, A] = hyperfine(del,lattice,chi,chiPAS,vectors,phos,pos
 %chi is the susceptibility tensor (in XTAL frame) that was calculated using
 %ChiTensor
 
+%chiPAS is the diagonalized susceptibility tensor
+%vectors are the eigenvectors of chiPAS
+
 %lat is the lattice vectors, lat = 3 x 3 matrix, diagonals are a,b,c
 %lattice constants, off diagonals are 0
 
@@ -63,11 +66,12 @@ T = 298;
 k = 1.38064852e-23;
 mu0 = 4*pi*10^-7;
 gam = 17.235;
+hbar = 1.054e-34;
 
-gtensor = vectors * sqrtm(3*k*T*chiPAS/(S*(S+1)*Na*mu0*muB^2)) / vectors;
+gtensorPAS = sqrtm(3*k*T*chiPAS/(S*(S+1)*Na*mu0*muB^2))
+gtensor = vectors*gtensorPAS*inv(vectors);
 
-
-A = hyp*3*k*T*gam/(S*(S+1)*muB) / gtensor; %estimation of hyperfine coupling constant 
+A = inv(gtensor)*hyp*(3*hbar*k*T*gam/(S*(S+1)*muB)); %estimation of hyperfine coupling constant 
 
 
 end
