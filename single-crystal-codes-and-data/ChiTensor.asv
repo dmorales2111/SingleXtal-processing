@@ -1,4 +1,4 @@
-function[chi,molchi,vec,eigen,axial,rhombic] = ChiTensor(del,lattice,positions,density,molweight)
+function[chi,vec,eigen,axial,rhombic] = ChiTensor(del,lattice,positions)
 
 %computes the Magnetic susceptibility Tensor for the given material, and
 %determines the maximum size of supercell which gives significant
@@ -31,7 +31,7 @@ Lipos = lattice * [0.5; 0.5; 0.5]; %same for all crystals
 continuenow = true;
 while continuenow 
     if mod(n,2) == 0
-        fprintf('Checking sum in a %d x %d x %d shell...\n', n,n,n) 
+        fprintf('Checking sum up to %d unit cells away...\n', n) 
     end
     for a = -n:1:n %dipole sum
         for b = -n:1:n
@@ -55,16 +55,15 @@ end
 t = toc;
 
 
-chi = 1e-6*4*pi*inv(D)*del; %susceptibility per particle
-molchi = 6.02e23 * chi; %molar susceptibility
+chi = 1e-6*4*pi*inv(D)*del;
+molchi = 6.02e23 * chi;
 
-[vec,eigen] = eig(molchi); %diagonalize
+[vec,eigen] = eig(molchi);
+vec = abs(vec);
 eigen = abs(eigen);
 
-eigen = eigen * (density*1e6) / molweight;
-
-rhombic = eigen(1,1) - eigen(2,2); %rhombic anisotropy, from Bertini et al.
-axial = 1.5 * (eigen(3,3) - (trace(eigen)/3)); %axial anisotropy, from Bertini et al.
+rhombic = eigen(1,1) - eigen(2,2);
+axial = 1.5 * (eigen(3,3) - (trace(eigen)/3));
 fprintf('The calculation converged after n = %d,  in %d seconds', n,t)
 end
 

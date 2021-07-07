@@ -1,4 +1,4 @@
-function [pc,hyp,gtensor, A] = hyperfine(del,lattice,chi,positions)
+function [pc,hyp,gtensor, A] = hyperfine(del,lattice,chi,chiPAS,vectors,phos,positions)
 %takes in susceptibility tensor from ChiTensor, and lattice positions to 
 %calculate hyperfine interaction for 31P shifts
 
@@ -21,18 +21,15 @@ clat = lattice(:,3);
 n = 0;
 D = zeros(3);
 B = zeros(3);
-positions2 = zeros(3,length(positions));
-for a = 1:length(positions)
-    positions2(:,a) = lattice*positions(:,a);
-end
 
-Psite1 = lattice * [.0948;.25;.4178];
-%Psite2 = [.91789;.75;.40522]*1e-10;
+positions2 = lattice * positions;
+
+Psite1 = lattice * phos;
 
 continuenow = true;
 while continuenow 
     if mod(n,2) == 0
-        fprintf('Checking sum up to %d unit cells away...\n', n) 
+        fprintf('Checking sum in a %d x %d x %d shell...\n', n,n,n) 
     end
     for a = -n:1:n %dipole sum
         for b = -n:1:n
@@ -57,6 +54,7 @@ t = toc;
 fprintf('The calculation converged after n = %d,  in %d seconds\n', n,t)
 
 pc = 1e6/(4*pi)*D*chi;
+hyp = del - pc; %calculated fermi contact term
 
 Na = 6.02e23;
 muB = 9.274009994e-24;
@@ -66,12 +64,10 @@ k = 1.38064852e-23;
 mu0 = 4*pi*10^-7;
 gam = 17.235;
 
-molchi = Na*chi;
-gtensor = sqrtm(3*k*T*chi/(S*(S+1)*mu0*muB^2));
+gtensor = vectors * sqrtm(3*k*T*chiPAS/(S*(S+1)*Na*mu0*muB^2)) / vectors;
 
-hyp = del - pc; %calculated fermi contact term
 
-A = hyp*3*k*T*gam/(S*(S+1)*muB)*gtensor; %estimation of hyperfine coupling constant 
+A = hyp*3*k*T*gam/(S*(S+1)*muB) / gtensor; %estimation of hyperfine coupling constant 
 
 
 end
