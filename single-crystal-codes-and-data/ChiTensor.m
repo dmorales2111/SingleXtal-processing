@@ -55,7 +55,7 @@ end
 t = toc;
 
 
-chi = 1e-6*4*pi*inv(D)*del; %susceptibility per particle
+chi = 1e-6*4*pi*(D*del; %susceptibility per particle
 molchi = 6.02e23 * chi; %molar susceptibility
 
 [vec,eigen] = eig(molchi); %diagonalize
