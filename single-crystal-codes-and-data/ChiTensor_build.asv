@@ -1,4 +1,4 @@
-function [vec,z,chi,D] = ChiTensor_build(DeL,lattice,positions,density,molweight)
+function [vec,z] = ChiTensor_build(DeL,lattice,positions,density,molweight)
 %function [chi,molchi,vec,eigen,axial,rhombic] = ChiTensor(del,lattice,positions,density,molweight)
 
 %computes the Magnetic susceptibility Tensor for the given material, and
@@ -28,9 +28,6 @@ B = zeros(3);
 
 %positions2 = [alat(1)*positions(1,:); blat(2)*positions(2,:); clat(3)*positions(3,:)];
 %Lipos = [alat(1)*5.00012e-01; blat(2)*4.99969e-01; clat(3)*5.00003e-01]; %for FePO4 crystal
-positions2 = lattice * positions;
-
-Lipos = lattice * [0.5; 0.5; 0.5];
 
 continuenow = true;
 while continuenow 
@@ -60,8 +57,8 @@ t = toc;
 
 chi = (4*pi)*(D\DeL); %(A^3) per particle susceptibility 
 molchi = (1e-6)*6.022e23 * chi; %(cm^3) per mol susceptibility
-molchi = molchi*(1e-24)*(density)/molweight; %unit-less PAS volume susceptibility
 [vec,eigeN] = eig(molchi); %~ component is diagonalizing matrix (use for g-tensor calc.)
+eigeN = eigeN*(1e-24)*(density)/molweight; %unit-less PAS volume susceptibility
 z = eigeN;
 
 %rhombic = eigen(1,1) - eigen(2,2); %rhombic anisotropy, from Bertini et al.

@@ -1,4 +1,4 @@
-function [pc,hyp,gtensor, A] = hyperfine(del,lattice,chi,chiPAS,vectors,phos,positions)
+function [pc,hyp,D] = hyperfine(del,lattice,chi,phos,positions)
 %takes in susceptibility tensor from ChiTensor, and lattice positions to 
 %calculate hyperfine interaction for 31P shifts
 
@@ -56,22 +56,23 @@ end
 t = toc;
 fprintf('The calculation converged after n = %d,  in %d seconds\n', n,t)
 
-pc = 1e6/(4*pi)*D*chi;
+
+pc = 1/(4*pi)*D*chi;
 hyp = del - pc; %calculated fermi contact term
 
-Na = 6.02e23;
-muB = 9.274009994e-24;
-S = input('Please input spin of TM site (2 for Fe, 2.5 for Mn): ');
-T = 298;
-k = 1.38064852e-23;
-mu0 = 4*pi*10^-7;
-gam = 17.235;
-hbar = 1.054e-34;
+%Na = 6.02e23;
+%muB = 9.274009994e-24;
+%S = input('Please input spin of TM site (2 for Fe, 2.5 for Mn): ');
+%T = 298;
+%k = 1.38064852e-23;
+%mu0 = 4*pi*10^-7;
+%gam = 17.235;
+%hbar = 1.054e-34;
 
-gtensorPAS = sqrtm(3*k*T*chiPAS/(S*(S+1)*Na*mu0*muB^2))
-gtensor = vectors*gtensorPAS*inv(vectors);
+%gtensorPAS = sqrtm(3*k*T*chiPAS/(S*(S+1)*Na*mu0*muB^2))
+%gtensor = vectors*gtensorPAS*inv(vectors);
 
-A = inv(gtensor)*hyp*(3*hbar*k*T*gam/(S*(S+1)*muB)); %estimation of hyperfine coupling constant 
+%A = inv(gtensor)*hyp*(3*hbar*k*T*gam/(S*(S+1)*muB)); %estimation of hyperfine coupling constant 
 
 
 end
