@@ -46,8 +46,8 @@ mu0 = 4*pi*1e-7;
 Lipc1 = 1e6*mu0*muB^2*S*(S+1)/(3*k*T)*(ge*LiD*1e30/4/pi); %Pigliapochi term (e) 
 Lipc2 = 1e6*mu0*muB^2*S*(S+1)/(3*k*T)*(giso*LiD*1e30/4/pi); %Pigliapochi term (g)
 
-Ppc1 = mu0*muB^2*S*(S+1)/(3*k*T)*(ge*PD*1e36/4/pi); %Pigliapochi term (e) 
-Ppc2 = mu0*muB^2*S*(S+1)/(3*k*T)*(giso*PD*1e36/4/pi); %Pigliapochi term (g)
+Ppc1 = mu0*muB^2*S*(S+1)/(3*k*T)*(ge^2*PD*1e36/4/pi); %Pigliapochi term (e) 
+Ppc2 = mu0*muB^2*S*(S+1)/(3*k*T)*(giso^2*PD*1e36/4/pi); %Pigliapochi term (g)
 
 [~,~,Lidipiso1,Lidel1,Lieta1] = stats(Lipc1);
 [~,~,Lidipiso2,Lidel2,Lieta2] = stats(Lipc2);
