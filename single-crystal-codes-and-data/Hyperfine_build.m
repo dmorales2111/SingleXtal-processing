@@ -38,7 +38,7 @@ end
 
 %constants
 muB = 9.274009994e-24;
-T = 293;
+T = 294.1; %Lab temperature
 k = 1.38064852e-23;
 gam = [17.235; 16.546];
 %hbar = 1.054e-34;
