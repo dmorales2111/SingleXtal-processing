@@ -18,7 +18,7 @@ kB = 1.38064852e-23;
 gam = 16.546;
 S = 2;
 gvalue = 2.12;
-omega = -161;
+theta = -161;
 mu0 = 4*pi*1e-7;
 hbar = 1.054e-34;
 
@@ -32,5 +32,5 @@ end
 
 D
 Dipoletensor = sum(D,3) %in angstroms^-3
-pseudo = 1e6*mu0*muB^2*S*(S+1)/(3*kB*(T-omega))*Dipoletensor*(gvalue^2)*1e30
+pseudo = 1e6*mu0*muB^2*S*(S+1)/(3*kB*(T-theta))*Dipoletensor*(gvalue^2)*1e30
 
