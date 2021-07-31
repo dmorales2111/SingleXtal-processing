@@ -45,8 +45,13 @@ end
 muB = 9.274009994e-24;
 T = 294.261; %Lab temperature, 70 deg F
 k = 1.38064852e-23;
-gam = [17.235; 16.546]; %in MHz/T
+gam = [17.235; 16.546]; %gyromagnetic ratios of 31P and 7Li in MHz/T
 mu0 = 4*pi*1e-7;
+
+
+%chemical shift tensor PAS
+[Lvec,Lprin] = eig(LiDeL);
+[Pvec,Pprin] = eig(PDeL);
 
 %%
 %Dipolar terms
@@ -54,38 +59,40 @@ mu0 = 4*pi*1e-7;
 LiD = dipsum(Lipos,lattice,positions);
 PD = dipsum(Ppos,lattice,positions);
 
-Lipc1 = 1e6*mu0*muB^2*S*(S+1)/(3*k*(T - theta))*(ge^2)*(LiD*1e30); %Pigliapochi term (e) 
-Lipc2 = 1e6*mu0*muB^2*S*(S+1)/(3*k*(T - theta))*(giso^2)*(LiD*1e30); %Pigliapochi term (g)
 
-Ppc1 = 1e6*mu0*muB^2*S*(S+1)/(3*k*(T - theta))*(ge^2)*PD*1e30; %Pigliapochi term (e) 
-Ppc2 = 1e6*mu0*muB^2*S*(S+1)/(3*k*(T - theta))*(giso^2)*PD*1e30; %Pigliapochi term (g)
+LiPC = 1e6*mu0*muB^2*S*(S+1)/(3*k*(T - theta))*((ge+giso)^2)*(LiD*1e30);
+PPC = 1e6*mu0*muB^2*S*(S+1)/(3*k*(T - theta))*((ge+giso)^2)*(PD*1e30);
 
-[~,~,~,Lidel1,Lieta1] = stats(Lipc1);
-[~,~,~,Lidel2,Lieta2] = stats(Lipc2);
+[~,~,~,Lidel1,Lieta1] = stats(LiPC);
+[~,~,~,Pdel1,Peta1] = stats(PPC);
 
-[~,~,~,Pdel1,Peta1] = stats(Ppc1);
-[~,~,~,Pdel2,Peta2] = stats(Ppc2);
  
 %%
 %Contact terms and hyperfine coupling constant calculations
 
-%whole contact term, Pigliapochi terms (a) and (c)
-Lihyp = LiDeL - Lipc1 - Lipc2;
-Phyp =  PDeL - Ppc1 - Ppc2;
-
-%now lets calculate hyperfine coupling constants (in 10^6 radians/s)
-
-[Lvec,~,Liso,Liisodel,Liisoeta,Liisoprin] = stats(Lihyp);
-[Pvec,~,Piso,Pisodel,Pisoeta,Pisoprin] = stats(Phyp);
+%Isotropic Fermi contact term
+Lihyp = LiDeL - LiPC;
+Phyp = PDeL - PPC;
 
 
+[~,~,Liso,Liisodel,Liisoeta,Liisoprin] = stats(Lihyp);
+[~,~,Piso,Pisodel,Pisoeta,Pisoprin] = stats(Phyp);
+
+%Anisotropic Fermi contact term
+Lianiso = Lihyp - Liso*eye(3);
+Paniso = Phyp - Piso*eye(3);
+
+[~,~,~,Lidel2,Lieta2] = stats(Lianiso);
+[~,~,~,Pdel2,Peta2] = stats(Paniso);
+
+%Hyperfine coupling constant estimation
 LiA = Liso*1e-6*3*k*(T - theta)*gam(2)/(muB*S*(S+1))/(ge+giso)*2*pi;
 PA = Piso*1e-6*3*k*(T - theta)*gam(1)/(muB*S*(S+1))/(ge+giso)*2*pi;
 
-save calculated_params.mat LiDeL PDeL LiD PD Lipc1 Lipc2 Ppc1 Ppc2 ...
+save calculated_params.mat LiDeL PDeL LiD PD  ...
     Lidel1 Lieta1 Lidel2 Lieta2 Pdel1 Peta1 ...
-    Pdel2 Peta2 Lihyp Phyp Lvec Pvec Liso Liisodel Liisoeta Liisoprin LiA ...
-    Piso Pisodel Pisoeta Pisoprin PA 
+    Pdel2 Peta2 Lihyp Phyp Lprin Pprin Liso Liisodel Liisoeta Liisoprin LiA ...
+    Piso Pisodel Pisoeta Pisoprin PA LiPC PPC Lvec Pvec
 
 end
 
